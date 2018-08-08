@@ -28,7 +28,9 @@
 #define MDL   22 // mouse down left
 #define MDR   23 // mouse down right
 
-
+#define CtrlF12 24
+#define CtrlAltF7 25
+#define CtrlAltIns 26
 
 /*
  * The Ordinary Layout for the Ergodox EZ keyboard, v5
@@ -93,7 +95,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * ,-----------------------------------------------------.       ,-----------------------------------------------------.
  * |           |  F1  |  F2  |  F3  |  F4  |  F5  | Esc  |       |  -   |  F6  |  F7  |  F8  |  F9  |  F10 |           |
  * |-----------+------+------+------+------+-------------|       |------+------+------+------+------+------+-----------|
- * |           |   !  |   @  |   {  |   }  |   &  |  <   |       |  >   |   |  |   7  |   8  |   9  |   /  |           |
+ * |           |   !  |   @  |   {  |   }  |CtAlF7|  <   |       |  >   |   |  |   7  |   8  |   9  |   /  |           |
  * |-----------+------+------+------+------+------|      |       |      |------+------+------+------+------+-----------|
  * |           |   #  |   $  |   (  |   )  |   `  |------|       |------|   /  |   4  |   5  |   6  |   *  |           |
  * |-----------+------+------+------+------+------|  '   |       |  "   |------+------+------+------+------+-----------|
@@ -104,28 +106,28 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  *                                         ,-------------.       ,-------------.
  *                                         | |||| | |||| |       | |||| | |||| |
  *                                  ,------|------|------|       |------+------+------.
- *                                  | Plus | Equal| |||| |       | |||| | Under| Dash |
+ *                                  |      | Equal| |||| |       | |||| | Under| Dash |
  *                                  |      |      |------|       |------| Score|      |
- *                                  |  +   |   =  |  !=  |       |  ->  |  _   |  -   |
+ *                                  |CtlF12|   =  |  !=  |       |  =>  |  _   |  -   |
  *                                  `--------------------'       `--------------------'
  */
 [SYMB] = LAYOUT_ergodox(
 // left hand
  KC_TRNS ,KC_F1       ,KC_F2        ,KC_F3   ,KC_F4   ,KC_F5   ,KC_ESC
-,KC_TRNS ,KC_EXLM     ,KC_AT        ,KC_LCBR ,KC_RCBR ,KC_AMPR ,LSFT(KC_COMM)
+,KC_TRNS ,KC_EXLM     ,KC_AT        ,KC_LCBR ,KC_RCBR ,M(CtrlAltF7) ,LSFT(KC_COMM)
 ,KC_TRNS ,KC_HASH     ,KC_DLR       ,KC_LPRN ,KC_RPRN ,KC_GRV
 ,KC_TRNS ,KC_PERC     ,KC_CIRC      ,KC_LBRC ,KC_RBRC ,KC_TILD ,KC_QUOT
 ,KC_SCLN ,KC_AMPR     ,KC_ASTR ,LSFT(KC_COMM),LSFT(KC_DOT)
                                                       ,M(GrtEq),M(LesEq)
                                                                ,KC_NO
-                                             ,KC_PLUS ,KC_EQL  ,M(NotEq)
+                                             ,M(CtrlF12) ,KC_EQL  ,M(NotEq)
                                                                  // right hand
                                                                  ,KC_MINS     ,KC_F6        ,KC_F7 ,KC_F8  ,KC_F9 ,KC_F10  ,KC_TRNS
                                                                  ,LSFT(KC_DOT),KC_PIPE      ,KC_7  ,KC_8   ,KC_9  ,KC_SLSH ,KC_TRNS
                                                                               ,KC_SLSH      ,KC_4  ,KC_5   ,KC_6  ,KC_ASTR ,KC_TRNS
                                                                  ,LSFT(KC_QUOT),KC_BSLS     ,KC_1  ,KC_2   ,KC_3  ,KC_MINS ,KC_TRNS
                                                                                             ,KC_0  ,KC_DOT ,KC_EQL,KC_PLUS ,KC_ENT
-                                                                 ,KC_NO       ,KC_NO
+                                                                 ,M(CtrlAltIns)       ,KC_NO
                                                                  ,KC_NO
                                                                  ,M(DeRef)    ,LSFT(KC_MINS),KC_MINS
 ),
@@ -154,11 +156,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 [MDIA] = LAYOUT_ergodox(
 // left hand
  KC_TRNS ,KC_F11   ,KC_F12  ,KC_F13   ,KC_F14  ,KC_F15  ,KC_ESC
-,KC_TRNS ,KC_POWER ,M(MUL)  ,KC_MS_U  ,M(MUR)  ,KC_VOLU ,KC_WH_U
-,KC_TRNS ,KC_SLEP  ,KC_MS_L ,KC_MS_D  ,KC_MS_R ,KC_VOLD
+,KC_TRNS ,KC_TRNS ,M(MUL)  ,KC_MS_U  ,M(MUR)  ,KC_VOLU ,KC_WH_U
+,KC_TRNS ,KC_TRNS  ,KC_MS_L ,KC_MS_D  ,KC_MS_R ,KC_VOLD
 ,KC_TRNS ,KC_NO    ,M(MDL)  ,KC_MS_D  ,M(MDR)  ,KC_MUTE ,KC_WH_D
 ,KC_NO ,KC_NO   ,KC_BTN3 ,KC_BTN1  ,KC_BTN2
-                                               ,KC_WSTP ,KC_WREF
+                                               ,KC_WREF ,KC_WSTP
                                                         ,KC_WSCH
                                       ,KC_WBAK ,KC_NO   ,KC_WHOM
                                                                      // right hand
@@ -410,7 +412,25 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt)
 
         case DeRef:
         if (record->event.pressed) {
-            return MACRO( I(10), T(MINS), D(LSFT), T(DOT), U(LSFT), END  ); // ->
+            return MACRO(I(10), T(EQL), D(LSFT), T(DOT), U(LSFT), END); // =>
+        }
+        break;
+
+        case CtrlF12:
+        if (record->event.pressed) {
+            return MACRO(I(10), D(LCTL), T(F12), U(LCTL), END); // Ctrl + F12
+        }
+        break;
+
+        case CtrlAltF7:
+        if (record->event.pressed) {
+            return MACRO(I(10), D(LCTL), D(LALT), T(F7), U(LCTL), U(LALT), END); // Ctrl + Alt + F7
+        }
+        break;
+
+        case CtrlAltIns:
+        if (record->event.pressed) {
+            return MACRO(I(10), D(LCTL), D(LALT), T(INS), U(LCTL), U(LALT), END); // Ctrl + Alt + Ins
         }
         break;
 
